@@ -1,0 +1,47 @@
+# Delivery Note & Invoice Issuance System (Microsoft Access)
+
+A Microsoft Access-based Delivery Note and Invoice issuance system designed for small to medium-sized businesses (SMBs).
+It features input efficiency (autocomplete) and historical data preservation (denormalization), optimized for printing on B5 paper.
+
+## 📋 Features
+
+* **Input Assistance**: Displays candidates by simply typing the "reading" of customer or product names, and auto-completes addresses and unit prices.
+* **Historical Data Preservation**: Designed to preserve past slip data (information at the time of issuance) even if master data (addresses or prices) changes in the future.
+* **B5 Printing Support**: Optimized for B5 paper (vertical), sequentially outputting a Delivery Note followed by an Invoice.
+
+## 🛠 Tech Stack / Environment
+
+* **Platform**: Microsoft Access (Office 365 / 2019 or later recommended)
+* **Language**: VBA (minimal event control), Access Macro
+* **File Format**: `.accdb`
+
+---
+
+## 💾 Database Structure (Schema & ER Diagram)
+
+This system follows a typical "Header-Detail" relational database structure but includes **intentionally denormalized fields** to preserve historical data integrity.
+
+### ER Diagram (Mermaid)
+
+```mermaid
+erDiagram
+    T_SALES ||--|{ T_SALES_DETAIL : "One-to-Many"
+    T_CUSTOMER ||--|{ T_SALES : "Lookup"
+    T_ITEM ||--|{ T_SALES_DETAIL : "Lookup"
+
+    T_SALES {
+        long SalesID PK "AutoNumber"
+        long CustomerID FK "Reference Only"
+        date SalesDate
+        string DeliveryName_Saved "History Kept"
+        string AddressInfo_Saved "History Kept"
+    }
+
+    T_SALES_DETAIL {
+        long SalesDetailID PK "AutoNumber"
+        long SalesID FK
+        long ItemID FK "Reference Only"
+        string ItemName_Saved "History Kept"
+        currency UnitPrice_Saved "History Kept"
+        int Quantity
+    }
